@@ -1,0 +1,84 @@
+{
+  "options": {
+    "step": {
+      "init": {
+        "title": "Appartme Options",
+        "description": "Adjust the options for the Appartme System.",
+        "data": {
+          "update_interval": "Update Interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "interval_too_short": "Update interval must be at least {min_interval} seconds.",
+      "invalid_int": "Please enter a valid integer."
+    }
+  },
+  "entity": {
+    "switch": {
+      "fifth_channel": {
+        "name": "Additional Channel"
+      },
+      "sockets": {
+        "name": "Sockets"
+      }
+    },
+    "light": {
+      "lighting": {
+        "name": "Lighting"
+      }
+    },
+    "valve": {
+      "water": {
+        "name": "Water"
+      }
+    },
+    "climate": {
+      "thermostat_mode": {
+        "name": "Heating"
+      }
+    },
+    "sensor": {
+      "total_current": {
+        "name": "Total Current"
+      },
+      "phase_1_current": {
+        "name": "Current (phase 1)"
+      },
+      "phase_2_current": {
+        "name": "Current (phase 2)"
+      },
+      "phase_3_current": {
+        "name": "Current (phase 3)"
+      },
+      "total_voltage": {
+        "name": "Total Voltage"
+      },
+      "phase_1_voltage": {
+        "name": "Voltage (phase 1)"
+      },
+      "phase_2_voltage": {
+        "name": "Voltage (phase 2)"
+      },
+      "phase_3_voltage": {
+        "name": "Voltage (phase 3)"
+      },
+      "total_power": {
+        "name": "Total Power"
+      },
+      "phase_1_power": {
+        "name": "Power (phase 1)"
+      },
+      "phase_2_power": {
+        "name": "Power (phase 2)"
+      },
+      "phase_3_power": {
+        "name": "Power (phase 3)"
+      }
+    }
+  },
+  "logbook": {
+    "changed_preset_mode": "Changed preset mode to {preset_mode}",
+    "changed_target_temperature": "Changed target temperature to {temperature}°C"
+  }
+}

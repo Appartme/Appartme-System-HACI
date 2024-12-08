@@ -1,0 +1,84 @@
+{
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje Appartme",
+        "description": "Skonfiguruj swoją integrację Appartme.",
+        "data": {
+          "update_interval": "Częstotliwość odświeżania (sekundy)"
+        }
+      }
+    },
+    "error": {
+      "interval_too_short": "Częstotliwość odświeżania musi wynosić co najmniej {min_interval} sekund.",
+      "invalid_int": "Wprowadź poprawną liczbę całkowitą."
+    }
+  },
+  "entity": {
+    "switch": {
+      "fifth_channel": {
+        "name": "Obwód dodatkowy"
+      },
+      "sockets": {
+        "name": "Zasilanie"
+      }
+    },
+    "light": {
+      "lighting": {
+        "name": "Oświetlenie"
+      }
+    },
+    "valve": {
+      "water": {
+        "name": "Zawór wody"
+      }
+    },
+    "climate": {
+      "thermostat_mode": {
+        "name": "Ogrzewanie"
+      }
+    },
+    "sensor": {
+      "total_current": {
+        "name": "Sumaryczny prąd"
+      },
+      "phase_1_current": {
+        "name": "Prąd (faza 1)"
+      },
+      "phase_2_current": {
+        "name": "Prąd (faza 2)"
+      },
+      "phase_3_current": {
+        "name": "Prąd (faza 3)"
+      },
+      "total_voltage": {
+        "name": "Sumaryczne napięcie"
+      },
+      "phase_1_voltage": {
+        "name": "Napięcie (faza 1)"
+      },
+      "phase_2_voltage": {
+        "name": "Napięcie (faza 2)"
+      },
+      "phase_3_voltage": {
+        "name": "Napięcie (faza 3)"
+      },
+      "total_power": {
+        "name": "Sumaryczna moc"
+      },
+      "phase_1_power": {
+        "name": "Moc (faza 1)"
+      },
+      "phase_2_power": {
+        "name": "Moc (faza 2)"
+      },
+      "phase_3_power": {
+        "name": "Moc (faza 3)"
+      }
+    }
+  },
+  "logbook": {
+    "changed_preset_mode": "Zmiana trybu na {preset_mode}",
+    "changed_target_temperature": "Zmiana temperatury na {temperature}°C"
+  }
+}

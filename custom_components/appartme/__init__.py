@@ -1,9 +1,11 @@
 """Appartme Integration."""
 
 from datetime import timedelta
+from functools import reduce
 import json
 import logging
 import os
+from typing import Any
 
 from appartme_paas import AppartmePaasClient
 
@@ -31,13 +33,22 @@ def read_translation_file(translation_file: str) -> dict:
         return json.load(file)
 
 
-def get_logbook_translation(
-    translations: dict, translation_key: str, default_name=None, **kwargs
+def get_translation(
+    translations: dict[str, Any], translation_key: str, default_name="", **kwargs
 ) -> str:
-    """Fetch the translated logbook entry with formatting."""
-    translation_template = translations.get("logbook", {}).get(
-        translation_key, default_name or translation_key
+    """Fetch the translated entry with formatting."""
+    translation_template = reduce(
+        lambda d, key: (
+            d.get(key, default_name) if isinstance(d, dict) else default_name
+        ),
+        translation_key.split("."),
+        translations,
     )
+
+    # Ensure it's a string
+    if not isinstance(translation_template, str):
+        return str(translation_template)
+
     return translation_template.format(**kwargs)
 
 
@@ -64,17 +75,21 @@ async def async_setup_entry(hass, config_entry):
         component_directory, f"translations/{language}.json"
     )
 
+    if not os.path.exists(translation_file):
+        _LOGGER.warning(
+            "Translation file for language '%s' not found at path: %s, switching to english",
+            language,
+            translation_file,
+        )
+        translation_file = os.path.join(component_directory, "translations/en.json")
+
     # Read the translation file in an executor to avoid blocking the event loop
     try:
         translations = await hass.async_add_executor_job(
             read_translation_file, translation_file
         )
     except FileNotFoundError:
-        _LOGGER.warning(
-            "Translation file for language '%s' not found at path: %s",
-            language,
-            translation_file,
-        )
+        _LOGGER.warning("Couldn't load translations")
         translations = {}
 
     session = async_get_clientsession(hass)

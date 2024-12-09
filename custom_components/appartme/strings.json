@@ -36,6 +36,12 @@
     "climate": {
       "thermostat_mode": {
         "name": "Heating"
+      },
+      "logbook_changed_preset_mode": {
+        "name": "Changed preset mode to {preset_mode}"
+      },
+      "logbook_changed_target_temperature": {
+        "name": "Changed target temperature to {temperature}°C"
       }
     },
     "sensor": {

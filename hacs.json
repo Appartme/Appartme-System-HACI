@@ -1,6 +1,6 @@
 {
     "name": "Appartme System - Home Assistant Custom Integration",
     "content_in_root": false,
-    "hide_default_branch": false,
+    "hide_default_branch": true,
     "country": ["PL", "US"]
   }

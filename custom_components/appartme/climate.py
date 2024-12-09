@@ -14,7 +14,7 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import get_logbook_translation
+from . import get_translation
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -221,9 +221,9 @@ class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
             logbook.async_log_entry(
                 self.hass,
                 name=f"{self.name}",
-                message=get_logbook_translation(
+                message=get_translation(
                     self._translations,
-                    "changed_preset_mode",
+                    "entity.climate.logbook_changed_preset_mode.name",
                     preset_mode=preset_mode,
                 ),
                 domain=DOMAIN,
@@ -271,9 +271,9 @@ class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
             logbook.async_log_entry(
                 self.hass,
                 name=f"{self.name}",
-                message=get_logbook_translation(
+                message=get_translation(
                     self._translations,
-                    "changed_target_temperature",
+                    "entity.climate.logbook_changed_target_temperature.name",
                     temperature=temperature,
                 ),
                 domain=DOMAIN,

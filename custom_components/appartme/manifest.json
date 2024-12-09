@@ -5,8 +5,9 @@
   "codeowners": ["@MiloszSlabs"],
   "config_flow": true,
   "dependencies": ["application_credentials", "logbook"],
-  "documentation": "https://www.home-assistant.io/integrations/appartme/",
+  "documentation": "https://github.com/Appartme/Appartme-System-HACI",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Appartme/Appartme-System-HACI/issues",
   "requirements": ["appartme_paas==0.1.2"],
   "version": "1.0.0"
 }

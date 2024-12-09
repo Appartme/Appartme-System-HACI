@@ -1,20 +1,81 @@
 {
-  "options": {
-    "step": {
-      "init": {
-        "title": "Opcje Appartme",
-        "description": "Skonfiguruj swoją integrację Appartme.",
-        "data": {
-          "update_interval": "Częstotliwość odświeżania (sekundy)"
-        }
+  "config": {
+      "abort": {
+          "already_configured": "Konto jest już skonfigurowane",
+          "already_in_progress": "Przebieg konfiguracji już trwa",
+          "authorize_url_timeout": "Upłynął limit czasu generowania autoryzowanego adresu URL.",
+          "missing_configuration": "Komponent nie jest skonfigurowany. Postępuj zgodnie z dokumentacją.",
+          "no_url_available": "Brak dostępnego adresu URL. Aby uzyskać informacje na temat tego błędu, [sprawdź sekcję pomocy]({docs_url})",
+          "oauth_error": "Otrzymano nieprawidłowe dane tokena.",
+          "oauth_failed": "Błąd podczas uzyskiwania tokena dostępu.",
+          "oauth_timeout": "Upłynął limit czasu podczas rozwiązywania tokena OAuth.",
+          "oauth_unauthorized": "Błąd autoryzacji OAuth podczas uzyskiwania tokena dostępu.",
+          "user_rejected_authorize": "Odrzucono połączenie kont: {error}"
+      },
+      "create_entry": {
+          "default": "Pomyślnie uwierzytelniono"
+      },
+      "step": {
+          "pick_implementation": {
+              "title": "Wybierz metodę uwierzytelniania"
+          }
       }
-    },
-    "error": {
-      "interval_too_short": "Częstotliwość odświeżania musi wynosić co najmniej {min_interval} sekund.",
-      "invalid_int": "Wprowadź poprawną liczbę całkowitą."
-    }
   },
   "entity": {
+    "climate": {
+      "logbook_changed_preset_mode": {
+        "name": "Zmiana trybu na {preset_mode}"
+      },
+      "logbook_changed_target_temperature": {
+        "name": "Zmiana temperatury na {temperature}°C"
+      },
+      "thermostat_mode": {
+        "name": "Ogrzewanie"
+      }
+    },
+    "light": {
+      "lighting": {
+        "name": "Oświetlenie"
+      }
+    },
+    "sensor": {
+      "phase_1_current": {
+        "name": "Prąd (faza 1)"
+      },
+      "phase_1_power": {
+        "name": "Moc (faza 1)"
+      },
+      "phase_1_voltage": {
+        "name": "Napięcie (faza 1)"
+      },
+      "phase_2_current": {
+        "name": "Prąd (faza 2)"
+      },
+      "phase_2_power": {
+        "name": "Moc (faza 2)"
+      },
+      "phase_2_voltage": {
+        "name": "Napięcie (faza 2)"
+      },
+      "phase_3_current": {
+        "name": "Prąd (faza 3)"
+      },
+      "phase_3_power": {
+        "name": "Moc (faza 3)"
+      },
+      "phase_3_voltage": {
+        "name": "Napięcie (faza 3)"
+      },
+      "total_current": {
+        "name": "Sumaryczny prąd"
+      },
+      "total_power": {
+        "name": "Sumaryczna moc"
+      },
+      "total_voltage": {
+        "name": "Sumaryczne napięcie"
+      }
+    },
     "switch": {
       "fifth_channel": {
         "name": "Obwód dodatkowy"
@@ -23,62 +84,25 @@
         "name": "Zasilanie"
       }
     },
-    "light": {
-      "lighting": {
-        "name": "Oświetlenie"
-      }
-    },
     "valve": {
       "water": {
         "name": "Zawór wody"
       }
-    },
-    "climate": {
-      "thermostat_mode": {
-        "name": "Ogrzewanie"
-      }
-    },
-    "sensor": {
-      "total_current": {
-        "name": "Sumaryczny prąd"
-      },
-      "phase_1_current": {
-        "name": "Prąd (faza 1)"
-      },
-      "phase_2_current": {
-        "name": "Prąd (faza 2)"
-      },
-      "phase_3_current": {
-        "name": "Prąd (faza 3)"
-      },
-      "total_voltage": {
-        "name": "Sumaryczne napięcie"
-      },
-      "phase_1_voltage": {
-        "name": "Napięcie (faza 1)"
-      },
-      "phase_2_voltage": {
-        "name": "Napięcie (faza 2)"
-      },
-      "phase_3_voltage": {
-        "name": "Napięcie (faza 3)"
-      },
-      "total_power": {
-        "name": "Sumaryczna moc"
-      },
-      "phase_1_power": {
-        "name": "Moc (faza 1)"
-      },
-      "phase_2_power": {
-        "name": "Moc (faza 2)"
-      },
-      "phase_3_power": {
-        "name": "Moc (faza 3)"
-      }
     }
   },
-  "logbook": {
-    "changed_preset_mode": "Zmiana trybu na {preset_mode}",
-    "changed_target_temperature": "Zmiana temperatury na {temperature}°C"
+  "options": {
+    "error": {
+      "interval_too_short": "Częstotliwość odświeżania musi wynosić co najmniej {min_interval} sekund.",
+      "invalid_int": "Wprowadź poprawną liczbę całkowitą."
+    },
+    "step": {
+      "init": {
+        "data": {
+          "update_interval": "Częstotliwość odświeżania (sekundy)"
+        },
+        "description": "Skonfiguruj swoją integrację Appartme.",
+        "title": "Opcje Appartme"
+      }
+    }
   }
 }

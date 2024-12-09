@@ -1,84 +1,108 @@
 {
-  "options": {
-    "step": {
-      "init": {
-        "title": "Appartme Options",
-        "description": "Adjust the options for the Appartme System.",
-        "data": {
-          "update_interval": "Update Interval (seconds)"
-        }
+  "config": {
+      "abort": {
+          "already_configured": "Account is already configured",
+          "already_in_progress": "Configuration flow is already in progress",
+          "authorize_url_timeout": "Timeout generating authorize URL.",
+          "missing_configuration": "The component is not configured. Please follow the documentation.",
+          "no_url_available": "No URL available. For information about this error, [check the help section]({docs_url})",
+          "oauth_error": "Received invalid token data.",
+          "oauth_failed": "Error while obtaining access token.",
+          "oauth_timeout": "Timeout resolving OAuth token.",
+          "oauth_unauthorized": "OAuth authorization error while obtaining access token.",
+          "user_rejected_authorize": "Account linking rejected: {error}"
+      },
+      "create_entry": {
+          "default": "Successfully authenticated"
+      },
+      "step": {
+          "pick_implementation": {
+              "title": "Pick authentication method"
+          }
       }
-    },
-    "error": {
-      "interval_too_short": "Update interval must be at least {min_interval} seconds.",
-      "invalid_int": "Please enter a valid integer."
-    }
   },
   "entity": {
-    "switch": {
-      "fifth_channel": {
-        "name": "Additional Channel"
+      "climate": {
+          "logbook_changed_preset_mode": {
+              "name": "Changed preset mode to {preset_mode}"
+          },
+          "logbook_changed_target_temperature": {
+              "name": "Changed target temperature to {temperature}\u00b0C"
+          },
+          "thermostat_mode": {
+              "name": "Heating"
+          }
       },
-      "sockets": {
-        "name": "Sockets"
+      "light": {
+          "lighting": {
+              "name": "Lighting"
+          }
+      },
+      "sensor": {
+          "phase_1_current": {
+              "name": "Current (phase 1)"
+          },
+          "phase_1_power": {
+              "name": "Power (phase 1)"
+          },
+          "phase_1_voltage": {
+              "name": "Voltage (phase 1)"
+          },
+          "phase_2_current": {
+              "name": "Current (phase 2)"
+          },
+          "phase_2_power": {
+              "name": "Power (phase 2)"
+          },
+          "phase_2_voltage": {
+              "name": "Voltage (phase 2)"
+          },
+          "phase_3_current": {
+              "name": "Current (phase 3)"
+          },
+          "phase_3_power": {
+              "name": "Power (phase 3)"
+          },
+          "phase_3_voltage": {
+              "name": "Voltage (phase 3)"
+          },
+          "total_current": {
+              "name": "Total Current"
+          },
+          "total_power": {
+              "name": "Total Power"
+          },
+          "total_voltage": {
+              "name": "Total Voltage"
+          }
+      },
+      "switch": {
+          "fifth_channel": {
+              "name": "Additional Channel"
+          },
+          "sockets": {
+              "name": "Sockets"
+          }
+      },
+      "valve": {
+          "water": {
+              "name": "Water"
+          }
       }
-    },
-    "light": {
-      "lighting": {
-        "name": "Lighting"
-      }
-    },
-    "valve": {
-      "water": {
-        "name": "Water"
-      }
-    },
-    "climate": {
-      "thermostat_mode": {
-        "name": "Heating"
-      }
-    },
-    "sensor": {
-      "total_current": {
-        "name": "Total Current"
-      },
-      "phase_1_current": {
-        "name": "Current (phase 1)"
-      },
-      "phase_2_current": {
-        "name": "Current (phase 2)"
-      },
-      "phase_3_current": {
-        "name": "Current (phase 3)"
-      },
-      "total_voltage": {
-        "name": "Total Voltage"
-      },
-      "phase_1_voltage": {
-        "name": "Voltage (phase 1)"
-      },
-      "phase_2_voltage": {
-        "name": "Voltage (phase 2)"
-      },
-      "phase_3_voltage": {
-        "name": "Voltage (phase 3)"
-      },
-      "total_power": {
-        "name": "Total Power"
-      },
-      "phase_1_power": {
-        "name": "Power (phase 1)"
-      },
-      "phase_2_power": {
-        "name": "Power (phase 2)"
-      },
-      "phase_3_power": {
-        "name": "Power (phase 3)"
-      }
-    }
   },
-  "logbook": {
-    "changed_preset_mode": "Changed preset mode to {preset_mode}",
-    "changed_target_temperature": "Changed target temperature to {temperature}°C"
+  "options": {
+      "error": {
+          "interval_too_short": "Update interval must be at least {min_interval} seconds.",
+          "invalid_int": "Please enter a valid integer."
+      },
+      "step": {
+          "init": {
+              "data": {
+                  "update_interval": "Update Interval (seconds)"
+              },
+              "description": "Adjust the options for the Appartme System.",
+              "title": "Appartme Options"
+          }
+      }
   }
 }

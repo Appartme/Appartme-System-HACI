@@ -6,7 +6,11 @@ The **Appartme** integration allows you to interact with your Appartme System by
 
 ## Installation
 
+#### Method 1: Manually installation via Samba / SFTP
 Download and copy custom_components/appartme folder to custom_components folder in your HomeAssistant config folder
+
+#### Method 2: [HACS](https://hacs.xyz)
+At the moment it is only possible to add our integration to HACS using [Custom Repositories Feature](https://www.hacs.xyz/docs/faq/custom_repositories)
 
 ## Prerequisites
 

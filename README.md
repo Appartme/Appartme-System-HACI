@@ -6,11 +6,21 @@ The **Appartme** integration allows you to interact with your Appartme System by
 
 ## Installation
 
-#### Method 1: Manually installation via Samba / SFTP
-Download and copy custom_components/appartme folder to custom_components folder in your HomeAssistant config folder
+#### Method 1: Install from [HACS][hacs] (recommended)
+1. Have [HACS][hacs] installed, this will allow you to easily manage and track updates.
+2. Search in HACS for "Appartme System - Home Assistant Custom Integration" integration or just press the button below:
 
-#### Method 2: [HACS](https://hacs.xyz)
-At the moment it is only possible to add our integration to HACS using [Custom Repositories Feature](https://www.hacs.xyz/docs/faq/custom_repositories)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)][hacs-repository]
+
+3. Click Install below the found integration.
+
+#### Method 2: Manual installation
+1. Using the tool of choice open the folder (directory) for your HA configuration (where you find `configuration.yaml`)
+2. If you do not have a `custom_components` folder there, you need to create it
+3. In the `custom_components` folder create a new folder called `appartme`
+4. Download _all_ the files from the `custom_components/appartme/` folder in this repository
+5. Place the files you downloaded in the new folder you created
+6. *Restart HA to load the new integration*
 
 ## Prerequisites
 
@@ -24,13 +34,14 @@ To use this integration, you will need:
 
 To set up the Appartme integration:
 
-1. In the Home Assistant UI, click on **Settings**.
-2. Select **Devices & Services** from the sidebar.
-3. Click the **Add Integration** button in the bottom right corner.
-4. Search for **Appartme** and select it from the list.
-5. Enter your **OAuth Client ID** and **OAuth Secret** when prompted.
-6. Follow the on-screen instructions to complete the setup process.
-7. Once completed, you should see the Appartme integration listed in your Integrations page, and the associated devices and entities should be available in Home Assistant.
+1. [Click Here][integration-config] to directly add a `Appartme System` integration **or**
+> - In the Home Assistant UI, click on **Settings**.
+> - Select **Devices & Services** from the sidebar.
+> - Click the **Add Integration** button in the bottom right corner.
+> - Search for **Appartme** and select it from the list.
+2. Enter your **OAuth Client ID** and **OAuth Secret** when prompted.
+3. Follow the on-screen instructions to complete the setup process.
+4. Once completed, you should see the Appartme integration listed in your Integrations page, and the associated devices and entities should be available in Home Assistant.
 
 ## Capabilities
 
@@ -174,3 +185,9 @@ If you encounter any issues or have questions:
 
 - **Appartme Official Website**: [https://www.appartme.com](https://www.appartme.com)
 - **Home Assistant Developer Documentation**: [Integration Guidelines](https://developers.home-assistant.io/)
+
+***
+
+[hacs]: https://hacs.xyz
+[hacs-repository]: https://my.home-assistant.io/redirect/hacs_repository/?owner=Appartme&repository=Appartme-System-HACI&category=integration
+[integration-config]: https://my.home-assistant.io/redirect/config_flow_start/?domain=appartme

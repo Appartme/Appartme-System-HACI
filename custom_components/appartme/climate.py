@@ -42,10 +42,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             [
                 AppartmeThermostat(
                     api,
-                    device_info,
                     prop["propertyId"],
-                    translations,
                     coordinator,
+                    translations,
                 )
                 for prop in device_info.get("properties", [])
                 if prop["propertyId"] == "thermostat_mode"
@@ -63,12 +62,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
     """Representation of an Appartme thermostat."""
 
-    def __init__(self, api, device_info, property_id, translations, coordinator):
+    def __init__(self, api, property_id, coordinator, translations):
         """Initialize the thermostat."""
         super().__init__(coordinator)
         self._api = api
-        self._device_id = device_info["deviceId"]
-        self._device_name = device_info["name"]
+        self._device_id = coordinator.device_id
+        self._device_name = coordinator.device_name
         self._property_id = property_id
         self._attr_translation_key = property_id
         self._attr_has_entity_name = True
@@ -188,9 +187,7 @@ class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
     @property
     def supported_features(self) -> ClimateEntityFeature:
         """Return the supported features."""
-        return (
-            ClimateEntityFeature.PRESET_MODE | ClimateEntityFeature.TARGET_TEMPERATURE
-        )
+        return ClimateEntityFeature.PRESET_MODE | ClimateEntityFeature.TARGET_TEMPERATURE
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new HVAC mode (No actual change since only HEAT is supported)."""
@@ -211,9 +208,7 @@ class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
             return
 
         try:
-            await self._api.set_device_property_value(
-                self._device_id, "thermostat_mode", value
-            )
+            await self._api.set_device_property_value(self._device_id, "thermostat_mode", value)
             # Optimistically update the preset mode
             self._attr_preset_mode = preset_mode
 
@@ -261,9 +256,7 @@ class AppartmeThermostat(CoordinatorEntity, ClimateEntity):
             return
 
         try:
-            await self._api.set_device_property_value(
-                self._device_id, property_id, temperature
-            )
+            await self._api.set_device_property_value(self._device_id, property_id, temperature)
             # Optimistically update the target temperature
             self._attr_target_temperature = temperature
 

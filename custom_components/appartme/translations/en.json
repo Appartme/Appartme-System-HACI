@@ -90,6 +90,9 @@
           }
       }
   },
+  "device": {
+      "default_name": "Main Module"
+  },
   "options": {
       "error": {
           "interval_too_short": "Update interval must be at least {min_interval} seconds.",

@@ -32,7 +32,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             [
                 AppartmeSwitch(
                     api,
-                    device_info,
                     prop["propertyId"],
                     coordinator,
                 )
@@ -52,12 +51,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class AppartmeSwitch(CoordinatorEntity, SwitchEntity):
     """Representation of an Appartme switch."""
 
-    def __init__(self, api, device_info, property_id, coordinator):
+    def __init__(self, api, property_id, coordinator):
         """Initialize the switch."""
         super().__init__(coordinator)
         self._api = api
-        self._device_id = device_info["deviceId"]
-        self._device_name = device_info["name"]
+        self._device_id = coordinator.device_id
+        self._device_name = coordinator.device_name
         self._property_id = property_id
         self._attr_translation_key = property_id
         self._attr_has_entity_name = True
@@ -104,9 +103,7 @@ class AppartmeSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
         try:
-            await self._api.set_device_property_value(
-                self._device_id, self._property_id, True
-            )
+            await self._api.set_device_property_value(self._device_id, self._property_id, True)
             # Optimistically update the state after successful API call
             self._attr_is_on = True
             self.async_write_ha_state()
@@ -116,9 +113,7 @@ class AppartmeSwitch(CoordinatorEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
         try:
-            await self._api.set_device_property_value(
-                self._device_id, self._property_id, False
-            )
+            await self._api.set_device_property_value(self._device_id, self._property_id, False)
             # Optimistically update the state after successful API call
             self._attr_is_on = False
             self.async_write_ha_state()

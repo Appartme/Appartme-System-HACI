@@ -115,12 +115,17 @@ async def async_setup_entry(hass, config_entry):
 
             devices_info.append(device_info)
 
+            # Get default device name from translations
+            default_device_name = get_translation(
+                translations, "device.default_name", "Main Module"
+            )
+            
             # Create a coordinator for this device
             coordinator = AppartmeDataUpdateCoordinator(
                 hass,
                 api,
                 device_id,
-                device_info.get("name", "Unknown Device"),
+                device_info.get("name", default_device_name),
                 update_interval=timedelta(seconds=update_interval),
             )
 

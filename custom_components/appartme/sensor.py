@@ -65,7 +65,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     [
                         AppartmeEnergySensor(
                             api,
-                            device_info,
                             property_id,
                             coordinator,
                             unit=details["unit"],
@@ -82,7 +81,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             sensors.append(
                 AppartmeEnergySensor(
                     api,
-                    device_info,
                     property_id,
                     coordinator,
                     unit=details["unit"],
@@ -105,7 +103,6 @@ class AppartmeEnergySensor(CoordinatorEntity, SensorEntity):
     def __init__(
         self,
         api,
-        device_info,
         property_id,
         coordinator,
         unit,
@@ -115,8 +112,8 @@ class AppartmeEnergySensor(CoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._api = api
-        self._device_id = device_info["deviceId"]
-        self._device_name = device_info["name"]
+        self._device_id = coordinator.device_id
+        self._device_name = coordinator.device_name
         self._property_id = property_id
         self._unit = unit
         self._device_class = device_class
@@ -154,9 +151,7 @@ class AppartmeEnergySensor(CoordinatorEntity, SensorEntity):
 
         if self._property_id.startswith("total_"):
             # This is a total sensor; compute the sum of the phase values
-            measurement = self._property_id.split("_")[
-                1
-            ]  # 'current', 'voltage', 'power'
+            measurement = self._property_id.split("_")[1]  # 'current', 'voltage', 'power'
             total_value = 0
             for phase in PHASES:
                 prop_id = f"{phase}_{measurement}"

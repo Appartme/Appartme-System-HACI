@@ -90,6 +90,9 @@
       }
     }
   },
+  "device": {
+    "default_name": "Moduł Mieszkaniowy"
+  },
   "options": {
     "error": {
       "interval_too_short": "Częstotliwość odświeżania musi wynosić co najmniej {min_interval} sekund.",

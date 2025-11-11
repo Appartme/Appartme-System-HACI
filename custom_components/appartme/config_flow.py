@@ -65,20 +65,12 @@ class AppartmeConfigFlow(
 class AppartmeOptionsFlow(config_entries.OptionsFlow):
     """Handle options flow for Appartme System."""
 
-    def __init__(self, config_entry):
-        """Initialize the options flow.
-
-        Args:
-            config_entry: The configuration entry for the integration.
-
-        """
-        self.config_entry = config_entry
-
     async def async_step_init(self, user_input=None):
         """Manage the options."""
         errors = {}
         if user_input is not None:
             update_interval_input = user_input.get("update_interval")
+            update_interval = None
             try:
                 update_interval = int(update_interval_input)
                 if update_interval < UPDATE_INTERVAL_MIN:
@@ -86,7 +78,7 @@ class AppartmeOptionsFlow(config_entries.OptionsFlow):
             except ValueError:
                 errors["update_interval"] = "invalid_int"
 
-            if not errors:
+            if not errors and update_interval is not None:
                 # Save the options
                 user_input["update_interval"] = (
                     update_interval  # Ensure it's stored as int

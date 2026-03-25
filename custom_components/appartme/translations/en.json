@@ -36,6 +36,15 @@
       "light": {
           "lighting": {
               "name": "Lighting"
+          },
+          "switch_led": {
+              "name": "LED Light"
+          },
+          "switch_led_1": {
+              "name": "LED Light 1"
+          },
+          "switch_led_2": {
+              "name": "LED Light 2"
           }
       },
       "sensor": {
@@ -74,6 +83,30 @@
           },
           "total_voltage": {
               "name": "Total Voltage"
+          },
+          "temp_current": {
+              "name": "Temperature"
+          },
+          "humidity_value": {
+              "name": "Humidity"
+          },
+          "va_temperature": {
+              "name": "Temperature"
+          },
+          "va_humidity": {
+              "name": "Humidity"
+          },
+          "cur_current": {
+              "name": "Current"
+          },
+          "cur_power": {
+              "name": "Power"
+          },
+          "cur_voltage": {
+              "name": "Voltage"
+          },
+          "battery_percentage": {
+              "name": "Battery"
           }
       },
       "switch": {
@@ -82,6 +115,21 @@
           },
           "sockets": {
               "name": "Sockets"
+          },
+          "switch_1": {
+              "name": "Switch 1"
+          },
+          "switch_2": {
+              "name": "Switch 2"
+          },
+          "switch_3": {
+              "name": "Switch 3"
+          },
+          "switch": {
+              "name": "Switch"
+          },
+          "child_lock": {
+              "name": "Child Lock"
           }
       },
       "valve": {
@@ -91,7 +139,8 @@
       }
   },
   "device": {
-      "default_name": "Main Module"
+      "default_name": "Main Module",
+      "tuya_default_name": "Tuya Device"
   },
   "options": {
       "error": {

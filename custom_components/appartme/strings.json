@@ -21,11 +21,35 @@
       },
       "sockets": {
         "name": "Sockets"
+      },
+      "switch_1": {
+        "name": "Switch 1"
+      },
+      "switch_2": {
+        "name": "Switch 2"
+      },
+      "switch_3": {
+        "name": "Switch 3"
+      },
+      "switch": {
+        "name": "Switch"
+      },
+      "child_lock": {
+        "name": "Child Lock"
       }
     },
     "light": {
       "lighting": {
         "name": "Lighting"
+      },
+      "switch_led": {
+        "name": "LED Light"
+      },
+      "switch_led_1": {
+        "name": "LED Light 1"
+      },
+      "switch_led_2": {
+        "name": "LED Light 2"
       }
     },
     "valve": {
@@ -80,6 +104,30 @@
       },
       "phase_3_power": {
         "name": "Power (phase 3)"
+      },
+      "temp_current": {
+        "name": "Temperature"
+      },
+      "humidity_value": {
+        "name": "Humidity"
+      },
+      "va_temperature": {
+        "name": "Temperature"
+      },
+      "va_humidity": {
+        "name": "Humidity"
+      },
+      "cur_current": {
+        "name": "Current"
+      },
+      "cur_power": {
+        "name": "Power"
+      },
+      "cur_voltage": {
+        "name": "Voltage"
+      },
+      "battery_percentage": {
+        "name": "Battery"
       }
     }
   },

@@ -1,4 +1,4 @@
-"""Support for Appartme light control functionality."""
+"""Support for Appartme and Tuya light control functionality."""
 
 import logging
 
@@ -6,26 +6,27 @@ from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, TUYA_LIGHT_PROPERTIES
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up Appartme light platform."""
-    # Access the devices and API from hass.data
     data = hass.data[DOMAIN][config_entry.entry_id]
     devices_info = data["devices_info"]
+    tuya_devices_info = data.get("tuya_devices_info", [])
     api = data["api"]
     coordinators = data["coordinators"]
 
-    # Create light entities only for devices with 'lighting' property
     lights = []
+
+    # ── MM device lights ─────────────────────────────────────────────────
     for device_info in devices_info:
         device_id = device_info["deviceId"]
-        coordinator = coordinators[device_id]
+        coordinator = coordinators.get(device_id)
         if not coordinator:
-            _LOGGER.warning("No coordinator found for device %s. Skipping", device_id)
+            _LOGGER.warning("No coordinator found for MM device %s. Skipping", device_id)
             continue
 
         lights.extend(
@@ -40,7 +41,29 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             ]
         )
 
-    # Add the light entities to Home Assistant
+    # ── Tuya device lights ───────────────────────────────────────────────
+    for device_info in tuya_devices_info:
+        device_id = device_info["deviceId"]
+        coordinator = coordinators.get(device_id)
+        if not coordinator:
+            _LOGGER.warning("No coordinator found for Tuya device %s. Skipping", device_id)
+            continue
+
+        for prop in device_info.get("properties", []):
+            prop_id = prop["propertyId"]
+            if prop_id in TUYA_LIGHT_PROPERTIES and prop.get("type") == "boolean":
+                lights.append(
+                    TuyaLight(
+                        api,
+                        prop_id,
+                        coordinator,
+                    )
+                )
+
+    if not lights:
+        _LOGGER.warning("No light entities to add")
+        return
+
     async_add_entities(lights)
 
 
@@ -131,4 +154,89 @@ class AppartmeLight(CoordinatorEntity, LightEntity):
 
         self._attr_is_on = None
 
+        self.async_write_ha_state()
+
+
+class TuyaLight(CoordinatorEntity, LightEntity):
+    """Representation of a Tuya light controlled via Appartme PaaS API."""
+
+    def __init__(self, api, property_id, coordinator):
+        """Initialize the Tuya light."""
+        super().__init__(coordinator)
+        self._api = api
+        self._device_id = coordinator.device_id
+        self._device_name = coordinator.device_name
+        self._property_id = property_id
+        self._attr_supported_color_modes = {ColorMode.ONOFF}
+        self._attr_has_entity_name = True
+
+        # Optimistic state
+        self._attr_is_on = None
+
+    @property
+    def available(self) -> bool:
+        """Return if the entity is available."""
+        return self.coordinator.last_update_success
+
+    @property
+    def device_info(self):
+        """Return device information to link this entity to a Tuya device."""
+        return {
+            "identifiers": {(DOMAIN, self._device_id)},
+            "name": self._device_name,
+            "manufacturer": "Tuya",
+            "model": getattr(self.coordinator, "device_model", "Tuya Device"),
+        }
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID for this entity."""
+        return f"tuya_{self._device_id}_{self._property_id}"
+
+    @property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._property_id.replace("_", " ").title()
+
+    @property
+    def color_mode(self):
+        """Return the color mode."""
+        return ColorMode.ONOFF
+
+    @property
+    def is_on(self) -> bool:
+        """Return true if the light is on."""
+        if self._attr_is_on is not None:
+            return self._attr_is_on
+
+        data = self.coordinator.data
+        if data is None:
+            return False
+        for prop in data.get("values", []):
+            if prop["propertyId"] == self._property_id:
+                return bool(prop["value"])
+        return False
+
+    async def async_turn_on(self, **kwargs):
+        """Turn the Tuya light on."""
+        try:
+            await self._api.set_device_property_value(self._device_id, self._property_id, True)
+            self._attr_is_on = True
+            self.async_write_ha_state()
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.error("Error turning on Tuya light %s: %s", self.name, err)
+
+    async def async_turn_off(self, **kwargs):
+        """Turn the Tuya light off."""
+        try:
+            await self._api.set_device_property_value(self._device_id, self._property_id, False)
+            self._attr_is_on = False
+            self.async_write_ha_state()
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.error("Error turning off Tuya light %s: %s", self.name, err)
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_is_on = None
         self.async_write_ha_state()

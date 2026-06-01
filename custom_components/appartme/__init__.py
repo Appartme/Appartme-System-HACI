@@ -19,7 +19,9 @@ from .coordinator import AppartmeDataUpdateCoordinator, TuyaDataUpdateCoordinato
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
     Platform.CLIMATE,
+    Platform.COVER,
     Platform.LIGHT,
     Platform.SENSOR,
     Platform.SWITCH,

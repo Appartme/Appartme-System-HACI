@@ -15,7 +15,12 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, TUYA_SENSOR_PROPERTIES
+from .const import (
+    DOMAIN,
+    TUYA_CLIMATE_TEMP_SET,
+    TUYA_PROPERTIES_CONSUMED_BY_COVER,
+    TUYA_SENSOR_PROPERTIES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -101,6 +106,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         for prop in device_info.get("properties", []):
             prop_id = prop["propertyId"]
+            # Skip temp_set — handled by TuyaThermostat in climate.py
+            if prop_id == TUYA_CLIMATE_TEMP_SET:
+                continue
+            # Cover platform owns these — don't double-expose as sensors.
+            if prop_id in TUYA_PROPERTIES_CONSUMED_BY_COVER:
+                continue
             if prop_id in TUYA_SENSOR_PROPERTIES:
                 sensor_config = TUYA_SENSOR_PROPERTIES[prop_id]
                 sensors.append(
@@ -111,16 +122,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         sensor_config=sensor_config,
                     )
                 )
-            elif prop.get("type") == "number" and "read" in prop.get("mode", "read"):
-                # Generic numeric read-only Tuya properties as sensors
-                sensors.append(
-                    TuyaSensor(
-                        api,
-                        prop_id,
-                        coordinator,
-                        sensor_config=None,
-                    )
-                )
+            # No fallback for generic numeric read-only DPs: it floods HA with
+            # internal/calibration values (e.g. `voltage_coe`, `power_coe`,
+            # `add_ele`). DPs we want as sensors get explicit entries in
+            # TUYA_SENSOR_PROPERTIES.
 
     if not sensors:
         _LOGGER.warning("No energy sensor entities to add")
@@ -268,8 +273,8 @@ class TuyaSensor(CoordinatorEntity, SensorEntity):
         return {
             "identifiers": {(DOMAIN, self._device_id)},
             "name": self._device_name,
-            "manufacturer": "Tuya",
-            "model": getattr(self.coordinator, "device_model", "Tuya Device"),
+            "manufacturer": "Appartme",
+            "model": getattr(self.coordinator, "device_model", "Appartme+ Device"),
         }
 
     @property

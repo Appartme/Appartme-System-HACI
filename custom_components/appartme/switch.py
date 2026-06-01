@@ -6,7 +6,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, TUYA_SWITCH_PROPERTIES
+from .const import DOMAIN, TUYA_LIGHT_PROPERTIES, TUYA_SWITCH_PROPERTIES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,14 +51,25 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         for prop in device_info.get("properties", []):
             prop_id = prop["propertyId"]
-            if prop_id in TUYA_SWITCH_PROPERTIES and prop.get("type") == "boolean":
-                switches.append(
-                    TuyaSwitch(
-                        api,
-                        prop_id,
-                        coordinator,
-                    )
+            prop_type = prop.get("type", "")
+            prop_mode = prop.get("mode", "")
+
+            # Skip non-boolean or read-only properties
+            if prop_type != "boolean" or prop_mode == "read":
+                continue
+
+            # Skip properties claimed by the light platform
+            if prop_id in TUYA_LIGHT_PROPERTIES:
+                continue
+
+            # Known switch properties + fallback: any boolean readwrite → switch
+            switches.append(
+                TuyaSwitch(
+                    api,
+                    prop_id,
+                    coordinator,
                 )
+            )
 
     if not switches:
         _LOGGER.warning("No switch entities to add")
@@ -169,8 +180,8 @@ class TuyaSwitch(CoordinatorEntity, SwitchEntity):
         return {
             "identifiers": {(DOMAIN, self._device_id)},
             "name": self._device_name,
-            "manufacturer": "Tuya",
-            "model": getattr(self.coordinator, "device_model", "Tuya Device"),
+            "manufacturer": "Appartme",
+            "model": getattr(self.coordinator, "device_model", "Appartme+ Device"),
         }
 
     @property

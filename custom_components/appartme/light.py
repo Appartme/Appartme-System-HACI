@@ -184,8 +184,8 @@ class TuyaLight(CoordinatorEntity, LightEntity):
         return {
             "identifiers": {(DOMAIN, self._device_id)},
             "name": self._device_name,
-            "manufacturer": "Tuya",
-            "model": getattr(self.coordinator, "device_model", "Tuya Device"),
+            "manufacturer": "Appartme",
+            "model": getattr(self.coordinator, "device_model", "Appartme+ Device"),
         }
 
     @property

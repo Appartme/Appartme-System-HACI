@@ -1,8 +1,13 @@
 # Appartme System - Home Assistant Custom Integration
 
-The **Appartme** integration allows you to interact with your Appartme System by communicating with the Main Module through the Appartme PaaS API.
+The **Appartme** integration allows you to interact with your Appartme System through the Appartme PaaS API. It supports two categories of devices:
 
-**Important:** This integration is dedicated to Appartme Systems with the Main Module. It will **not work** with legacy hardware such as Connect, Relay, or Sensor. If you wish to upgrade to the new version of the Appartme System, please contact [Appartme Support](mailto:support@appartme.com).
+- **Main Module (MM)** — the central control unit of your Appartme System, managing lighting, sockets, heating, water valve, energy monitoring, and more.
+- **Appartme+ devices** — additional smart devices in the Appartme ecosystem (smart plugs, sensors, switches, lights, and other accessories).
+
+Both device types are discovered automatically during setup and appear as separate devices in Home Assistant.
+
+**Important:** This integration is dedicated to Appartme Systems with the Main Module and/or Appartme+ devices. It will **not work** with legacy hardware such as Connect, Relay, or Sensor. If you wish to upgrade to the new version of the Appartme System, please contact [Appartme Support](mailto:support@appartme.com).
 
 ## Installation
 
@@ -27,7 +32,9 @@ The **Appartme** integration allows you to interact with your Appartme System by
 To use this integration, you will need:
 
 - **An Appartme account**: You can create an account using the Appartme mobile app.
-- **Main Module added to your account**: Ensure that your Main Module (the central control unit of your Appartme System) is properly set up and linked to your Appartme account.
+- **At least one supported device linked to your account**:
+  - **Main Module** — the central control unit of your Appartme System, or
+  - **Appartme+ device** — an additional smart device added via the Appartme app.
 - **OAuth Client ID and OAuth Secret**: You can request these credentials via the [Appartme OAuth Credentials Request Form](https://tally.so/r/w5vP0d).
 
 ## Configuration
@@ -45,7 +52,9 @@ To set up the Appartme integration:
 
 ## Capabilities
 
-This integration allows you to:
+### Main Module (MM)
+
+The Main Module is the central unit of the Appartme System. Through this integration you can:
 
 - **Control all channels connected to your Main Module**:
 
@@ -68,11 +77,27 @@ This integration allows you to:
 - **Read current voltage, current, and power information**:
   - Access real-time data on voltage, current, and power consumption for each phase and total values.
 
+### Appartme+ Devices
+
+Appartme+ devices are additional smart accessories in the Appartme ecosystem. The integration automatically discovers them and creates entities based on their capabilities. Supported functionality includes:
+
+- **Switches**: Control smart plugs, relays, and multi-channel switches (up to 6 channels, USB outlets, child lock).
+- **Lights**: Turn Appartme+ LED lights on or off.
+- **Sensors**: Read measurements reported by Appartme+ devices:
+  - **Temperature** and **Humidity** sensors.
+  - **Voltage**, **Current**, and **Power** sensors.
+  - **Battery level** sensors.
+  - Other numeric properties are automatically exposed as generic sensors.
+
+> **Note:** The available entities depend on the specific Appartme+ device model. The integration dynamically reads device capabilities from the Appartme API and creates only the relevant entities.
+
 ## Entities
 
-The integration will create the following entities in Home Assistant:
+The integration creates entities in Home Assistant grouped by device type.
 
-### Climate
+### Main Module Entities
+
+#### Climate
 
 - **Climate Entity**: `climate.thermostat`
   - **HVAC Modes**: `heat` (only mode supported)
@@ -83,35 +108,29 @@ The integration will create the following entities in Home Assistant:
     - **Current Temperature**: Displays the current room temperature.
     - **Target Temperature**: Set the desired temperature for the current preset mode.
 
-### Switches
+#### Switches
 
-- **Switch Entity**: `switch.lighting`
+- **Switch Entity**: `switch.sockets` — Control power to your sockets.
+- **Switch Entity**: `switch.additional_channel` — Control the additional channel connected to your Main Module.
 
-  - Control your lighting.
+#### Lights
 
-- **Switch Entity**: `switch.sockets`
+- **Light Entity**: `light.lighting` — Control your lighting.
 
-  - Control power to your sockets.
+#### Valve
 
-- **Switch Entity**: `switch.water`
+- **Valve Entity**: `valve.water` — Open or close your water valve.
 
-  - Open or close your water valve.
-
-- **Switch Entity**: `switch.additional_channel`
-  - Control the additional channel connected to your Main Module.
-
-### Sensors
+#### Sensors
 
 - **Sensor Entities for Each Phase**:
 
   - **Current Sensors**:
-
     - `sensor.phase_1_current`
     - `sensor.phase_2_current`
     - `sensor.phase_3_current`
 
   - **Voltage Sensors**:
-
     - `sensor.phase_1_voltage`
     - `sensor.phase_2_voltage`
     - `sensor.phase_3_voltage`
@@ -122,13 +141,44 @@ The integration will create the following entities in Home Assistant:
     - `sensor.phase_3_power`
 
 - **Total Sensors**:
-
   - `sensor.total_current`
   - `sensor.total_voltage`
   - `sensor.total_power`
 
 - **Temperature Sensor**:
   - `sensor.current_temperature`: Displays the current ambient temperature.
+
+### Appartme+ Device Entities
+
+Entities created for Appartme+ devices depend on the specific device model. Below are examples of commonly created entities:
+
+#### Switches
+
+Multi-channel switches, smart plugs, and relays will be exposed as switch entities:
+
+- `switch.<device_name>_switch_1` — Channel 1
+- `switch.<device_name>_switch_2` — Channel 2
+- `switch.<device_name>_switch_3` — Channel 3
+- `switch.<device_name>_child_lock` — Child lock (if supported)
+
+#### Lights
+
+Appartme+ LED lights will appear as light entities:
+
+- `light.<device_name>_switch_led` — LED Light
+
+#### Sensors
+
+Measurement data from Appartme+ devices is exposed as sensor entities:
+
+- `sensor.<device_name>_temp_current` — Temperature (°C)
+- `sensor.<device_name>_humidity_value` — Humidity (%)
+- `sensor.<device_name>_cur_power` — Power consumption (W)
+- `sensor.<device_name>_cur_voltage` — Voltage (V)
+- `sensor.<device_name>_cur_current` — Current (mA)
+- `sensor.<device_name>_battery_percentage` — Battery level (%)
+
+> **Note:** The exact entity names depend on the device name configured in the Appartme app and the capabilities reported by the device.
 
 ## Configuration Options
 
@@ -146,19 +196,26 @@ To change options:
 
 ### Integration Not Working with Legacy Hardware
 
-Ensure you are using the Main Module. Legacy hardware such as Connect, Relay, or Sensor is not supported. To upgrade your system, please contact [Appartme Support](mailto:support@appartme.com).
+Ensure you are using the Main Module or Appartme+ devices. Legacy hardware such as Connect, Relay, or Sensor is not supported. To upgrade your system, please contact [Appartme Support](mailto:support@appartme.com).
 
 ### Entities Not Appearing
 
 - Verify that your OAuth credentials are correct.
-- Ensure that the Main Module is properly connected to your Appartme account.
+- Ensure that the Main Module and/or Appartme+ devices are properly connected to your Appartme account.
 - Check the Home Assistant logs for any errors during setup.
+- For Appartme+ devices: make sure the device is online and reachable via the Appartme mobile app.
 
 ### Incorrect Readings
 
 - Try restarting Home Assistant.
 - Increase the update interval in the configuration options.
-- Ensure that your Main Module is functioning correctly.
+- Ensure that your Main Module or Appartme+ device is functioning correctly.
+
+### Appartme+ Device Not Discovered
+
+- Confirm the device is linked to your Appartme account in the mobile app.
+- Restart the integration by removing and re-adding it in Home Assistant.
+- Check Home Assistant logs for error messages related to device discovery.
 
 ## Frequently Asked Questions
 
@@ -168,7 +225,15 @@ You can request your OAuth Client ID and OAuth Secret by visiting the [Appartme 
 
 ### Can I use this integration with legacy Appartme hardware?
 
-No, this integration is only compatible with the Appartme Main Module. It does not support legacy hardware such as Connect, Relay, or Sensor. To upgrade your system, please contact [Appartme Support](mailto:support@appartme.com).
+No, this integration is only compatible with the Appartme Main Module and Appartme+ devices. It does not support legacy hardware such as Connect, Relay, or Sensor. To upgrade your system, please contact [Appartme Support](mailto:support@appartme.com).
+
+### What are Appartme+ devices?
+
+Appartme+ devices are additional smart accessories in the Appartme ecosystem — smart plugs, sensors, switches, lights, and other IoT devices managed through your Appartme account. They extend the capabilities of your Appartme System beyond the Main Module.
+
+### How do I add an Appartme+ device?
+
+Add the device using the Appartme mobile app. Once the device is linked to your account, it will be automatically discovered by the Home Assistant integration during setup or after reloading the integration.
 
 ### How do I change the default temperatures for comfort and eco modes?
 

@@ -36,6 +36,15 @@
     "light": {
       "lighting": {
         "name": "Oświetlenie"
+      },
+      "switch_led": {
+        "name": "Lampka LED"
+      },
+      "switch_led_1": {
+        "name": "Lampka LED 1"
+      },
+      "switch_led_2": {
+        "name": "Lampka LED 2"
       }
     },
     "sensor": {
@@ -74,6 +83,30 @@
       },
       "total_voltage": {
         "name": "Sumaryczne napięcie"
+      },
+      "temp_current": {
+        "name": "Temperatura"
+      },
+      "humidity_value": {
+        "name": "Wilgotność"
+      },
+      "va_temperature": {
+        "name": "Temperatura"
+      },
+      "va_humidity": {
+        "name": "Wilgotność"
+      },
+      "cur_current": {
+        "name": "Prąd"
+      },
+      "cur_power": {
+        "name": "Moc"
+      },
+      "cur_voltage": {
+        "name": "Napięcie"
+      },
+      "battery_percentage": {
+        "name": "Bateria"
       }
     },
     "switch": {
@@ -82,6 +115,21 @@
       },
       "sockets": {
         "name": "Zasilanie"
+      },
+      "switch_1": {
+        "name": "Przełącznik 1"
+      },
+      "switch_2": {
+        "name": "Przełącznik 2"
+      },
+      "switch_3": {
+        "name": "Przełącznik 3"
+      },
+      "switch": {
+        "name": "Przełącznik"
+      },
+      "child_lock": {
+        "name": "Blokada rodzicielska"
       }
     },
     "valve": {
@@ -91,7 +139,8 @@
     }
   },
   "device": {
-    "default_name": "Moduł Mieszkaniowy"
+    "default_name": "Moduł Mieszkaniowy",
+    "tuya_default_name": "Urządzenie Tuya"
   },
   "options": {
     "error": {

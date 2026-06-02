@@ -13,13 +13,15 @@ from homeassistant.const import Platform
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import API_URL, DOMAIN, UPDATE_INTERVAL_DEFAULT
-from .coordinator import AppartmeDataUpdateCoordinator
+from .const import API_URL, DEVICE_TYPE_MM, DOMAIN, UPDATE_INTERVAL_DEFAULT
+from .coordinator import AppartmeDataUpdateCoordinator, TuyaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
     Platform.CLIMATE,
+    Platform.COVER,
     Platform.LIGHT,
     Platform.SENSOR,
     Platform.SWITCH,
@@ -98,29 +100,29 @@ async def async_setup_entry(hass, config_entry):
 
     devices = await api.fetch_devices()
     devices_info = []
+    tuya_devices_info = []
     coordinators = {}
 
     for device in devices:
-        if device["type"] == "mm":
-            device_id = device["deviceId"]
+        device_id = device["deviceId"]
+        device_type = device.get("type", "")
 
-            # Fetch device details
+        if device_type == DEVICE_TYPE_MM:
+            # ── Main Module (MM) device ──────────────────────────────────
             device_info = await api.fetch_device_details(device_id)
             if device_info is None:
                 _LOGGER.warning(
-                    "Could not fetch details for device %s. Skipping this device",
+                    "Could not fetch details for MM device %s. Skipping",
                     device_id,
                 )
-                continue  # Skip this device
+                continue
 
             devices_info.append(device_info)
 
-            # Get default device name from translations
             default_device_name = get_translation(
                 translations, "device.default_name", "Main Module"
             )
-            
-            # Create a coordinator for this device
+
             coordinator = AppartmeDataUpdateCoordinator(
                 hass,
                 api,
@@ -129,27 +131,75 @@ async def async_setup_entry(hass, config_entry):
                 update_interval=timedelta(seconds=update_interval),
             )
 
-            # Handle exceptions during initial refresh
             try:
                 await coordinator.async_config_entry_first_refresh()
             except ConfigEntryNotReady as err:
                 _LOGGER.warning(
-                    "Initial data fetch failed for device %s: %s", device_id, err
+                    "Initial data fetch failed for MM device %s: %s", device_id, err
                 )
-                # The coordinator will handle retries and set entities as unavailable
             except Exception as err:  # noqa: BLE001
                 _LOGGER.error(
-                    "Unexpected error during initial data fetch for device %s: %s",
+                    "Unexpected error during initial data fetch for MM device %s: %s",
                     device_id,
                     err,
                 )
 
             coordinators[device_id] = coordinator
 
+        else:
+            # ── Tuya device (non-MM) ─────────────────────────────────────
+            try:
+                device_info = await api.fetch_device_details(device_id)
+                if device_info is None:
+                    _LOGGER.warning(
+                        "Could not fetch details for Tuya device %s. Skipping",
+                        device_id,
+                    )
+                    continue
+
+                tuya_devices_info.append(device_info)
+
+                device_name = device_info.get("name") or device.get("name", f"Tuya {device_id[:8]}")
+                device_model = device_info.get("type", device_type)
+
+                coordinator = TuyaDataUpdateCoordinator(
+                    hass,
+                    api,
+                    device_id,
+                    device_name,
+                    device_model,
+                    update_interval=timedelta(seconds=update_interval),
+                )
+
+                try:
+                    await coordinator.async_config_entry_first_refresh()
+                except ConfigEntryNotReady as err:
+                    _LOGGER.warning(
+                        "Initial data fetch failed for Tuya device %s: %s",
+                        device_id,
+                        err,
+                    )
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.error(
+                        "Unexpected error during initial data fetch for Tuya device %s: %s",
+                        device_id,
+                        err,
+                    )
+
+                coordinators[device_id] = coordinator
+
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.warning(
+                    "Failed to set up Tuya device %s: %s. Skipping",
+                    device_id,
+                    err,
+                )
+
     # Store the devices and coordinators in hass.data for use in other platforms
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][config_entry.entry_id] = {
         "devices_info": devices_info,
+        "tuya_devices_info": tuya_devices_info,
         "api": api,
         "translations": translations,
         "coordinators": coordinators,

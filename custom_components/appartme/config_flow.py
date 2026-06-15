@@ -43,7 +43,9 @@ class AppartmeConfigFlow(
     @callback
     def async_get_options_flow(config_entry):
         """Define the options flow for reconfiguration."""
-        return AppartmeOptionsFlow(config_entry)
+        # HA 2024.12+ auto-injects `self.config_entry` on the OptionsFlow
+        # instance — passing it positionally now raises TypeError.
+        return AppartmeOptionsFlow()
 
     async def async_oauth_create_implementation(self):
         """Get OAuth2 implementation."""

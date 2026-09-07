@@ -5,12 +5,11 @@ import logging
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.components import application_credentials
 from homeassistant.core import callback
 from homeassistant.helpers import config_entry_oauth2_flow
 
-from .application_credentials import async_get_authorization_server
 from .const import DOMAIN, UPDATE_INTERVAL_DEFAULT, UPDATE_INTERVAL_MIN
+from .oauth import async_register_builtin_implementation
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,15 +28,28 @@ class AppartmeConfigFlow(
 
     async def async_oauth_create_entry(self, data):
         """Create an entry after OAuth authentication."""
+        if self.source == config_entries.SOURCE_REAUTH:
+            return self.async_update_reload_and_abort(
+                self._get_reauth_entry(), data=data
+            )
         return self.async_create_entry(title="Appartme System", data=data)
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
+        # HA does not call the integration's async_setup before the first
+        # flow, so the built-in implementation must be registered here too.
+        async_register_builtin_implementation(self.hass)
         return await super().async_step_user(user_input)
 
-    async def async_step_reauth(self, user_input=None):
-        """Handle reauthentication if token expired."""
-        return await super().async_step_reauth(user_input)
+    async def async_step_reauth(self, entry_data):
+        """Handle reauthentication if token expired or credentials revoked."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(self, user_input=None):
+        """Confirm reauthentication with the user before starting OAuth."""
+        if user_input is None:
+            return self.async_show_form(step_id="reauth_confirm")
+        return await self.async_step_user()
 
     @staticmethod
     @callback
@@ -46,22 +58,6 @@ class AppartmeConfigFlow(
         # HA 2024.12+ auto-injects `self.config_entry` on the OptionsFlow
         # instance — passing it positionally now raises TypeError.
         return AppartmeOptionsFlow()
-
-    async def async_oauth_create_implementation(self):
-        """Get OAuth2 implementation."""
-        auth_server = await async_get_authorization_server(self.hass)
-        client_credential = await application_credentials.async_get_client_credential(
-            self.hass, DOMAIN
-        )
-
-        return config_entry_oauth2_flow.LocalOAuth2Implementation(
-            self.hass,
-            DOMAIN,
-            client_id=client_credential.client_id,
-            client_secret=client_credential.client_secret,
-            authorize_url=auth_server.authorize_url,
-            token_url=auth_server.token_url,
-        )
 
 
 class AppartmeOptionsFlow(config_entries.OptionsFlow):

@@ -5,6 +5,8 @@
           "already_in_progress": "Przebieg konfiguracji już trwa",
           "authorize_url_timeout": "Upłynął limit czasu generowania autoryzowanego adresu URL.",
           "missing_configuration": "Komponent nie jest skonfigurowany. Postępuj zgodnie z dokumentacją.",
+          "missing_credentials": "Integracja wymaga poświadczeń aplikacji.",
+          "reauth_successful": "Ponowne uwierzytelnienie powiodło się",
           "no_url_available": "Brak dostępnego adresu URL. Aby uzyskać informacje na temat tego błędu, [sprawdź sekcję pomocy]({docs_url})",
           "oauth_error": "Otrzymano nieprawidłowe dane tokena.",
           "oauth_failed": "Błąd podczas uzyskiwania tokena dostępu.",
@@ -18,6 +20,10 @@
       "step": {
           "pick_implementation": {
               "title": "Wybierz metodę uwierzytelniania"
+          },
+          "reauth_confirm": {
+              "title": "Ponowne uwierzytelnienie Appartme",
+              "description": "Integracja Appartme wymaga ponownego uwierzytelnienia Twojego konta."
           }
       }
   },

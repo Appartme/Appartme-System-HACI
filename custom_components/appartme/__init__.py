@@ -7,14 +7,17 @@ import logging
 import os
 from typing import Any
 
+import aiohttp
 from appartme_paas import AppartmePaasClient
 
 from homeassistant.const import Platform
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import config_entry_oauth2_flow
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import API_URL, DEVICE_TYPE_MM, DOMAIN, UPDATE_INTERVAL_DEFAULT
 from .coordinator import AppartmeDataUpdateCoordinator, TuyaDataUpdateCoordinator
+from .oauth import async_register_builtin_implementation
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,6 +55,12 @@ def get_translation(
         return str(translation_template)
 
     return translation_template.format(**kwargs)
+
+
+async def async_setup(hass, config):
+    """Set up the Appartme integration (register built-in OAuth2 client)."""
+    async_register_builtin_implementation(hass)
+    return True
 
 
 async def async_setup_entry(hass, config_entry):
@@ -94,8 +103,33 @@ async def async_setup_entry(hass, config_entry):
         _LOGGER.warning("Couldn't load translations")
         translations = {}
 
+    try:
+        implementation = (
+            await config_entry_oauth2_flow.async_get_config_entry_implementation(
+                hass, config_entry
+            )
+        )
+    except ValueError as err:
+        # Implementation gone, e.g. the user's application credential was
+        # removed — reauth will migrate the entry to the built-in client.
+        raise ConfigEntryAuthFailed(
+            "OAuth credentials removed; re-authentication required"
+        ) from err
+
+    oauth_session = config_entry_oauth2_flow.OAuth2Session(
+        hass, config_entry, implementation
+    )
+    try:
+        await oauth_session.async_ensure_token_valid()
+    except aiohttp.ClientResponseError as err:
+        if err.status in (400, 401):
+            raise ConfigEntryAuthFailed from err
+        raise ConfigEntryNotReady from err
+    except aiohttp.ClientError as err:
+        raise ConfigEntryNotReady from err
+
     session = async_get_clientsession(hass)
-    access_token = config_entry.data["token"]["access_token"]
+    access_token = oauth_session.token["access_token"]
     api = AppartmePaasClient(access_token, session=session, api_url=API_URL)
 
     devices = await api.fetch_devices()

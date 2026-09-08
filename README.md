@@ -35,7 +35,8 @@ To use this integration, you will need:
 - **At least one supported device linked to your account**:
   - **Main Module** — the central control unit of your Appartme System, or
   - **Appartme+ device** — an additional smart device added via the Appartme app.
-- **OAuth Client ID and OAuth Secret**: You can request these credentials via the [Appartme OAuth Credentials Request Form](https://tally.so/r/w5vP0d).
+
+> **Note:** As of version 1.2.0 you no longer need to request OAuth credentials — the integration ships with a built-in OAuth client. Advanced users can still use their own credentials via Home Assistant's **Application Credentials**.
 
 ## Configuration
 
@@ -46,9 +47,8 @@ To set up the Appartme integration:
 > - Select **Devices & Services** from the sidebar.
 > - Click the **Add Integration** button in the bottom right corner.
 > - Search for **Appartme** and select it from the list.
-2. Enter your **OAuth Client ID** and **OAuth Secret** when prompted.
-3. Follow the on-screen instructions to complete the setup process.
-4. Once completed, you should see the Appartme integration listed in your Integrations page, and the associated devices and entities should be available in Home Assistant.
+2. Log in with your **Appartme account** when redirected to the Appartme authorization page and approve access.
+3. Once completed, you should see the Appartme integration listed in your Integrations page, and the associated devices and entities should be available in Home Assistant.
 
 ## Capabilities
 
@@ -200,7 +200,7 @@ Ensure you are using the Main Module or Appartme+ devices. Legacy hardware such 
 
 ### Entities Not Appearing
 
-- Verify that your OAuth credentials are correct.
+- Try re-authenticating: go to **Settings** > **Devices & Services** > **Appartme**, and reload the integration or follow the re-authentication prompt if one appears.
 - Ensure that the Main Module and/or Appartme+ devices are properly connected to your Appartme account.
 - Check the Home Assistant logs for any errors during setup.
 - For Appartme+ devices: make sure the device is online and reachable via the Appartme mobile app.
@@ -219,9 +219,9 @@ Ensure you are using the Main Module or Appartme+ devices. Legacy hardware such 
 
 ## Frequently Asked Questions
 
-### How do I obtain OAuth credentials?
+### Do I need to obtain OAuth credentials?
 
-You can request your OAuth Client ID and OAuth Secret by visiting the [Appartme OAuth Credentials Request Form](https://tally.so/r/w5vP0d) and following the instructions provided.
+No. Since version 1.2.0 the integration includes a built-in OAuth client — just add the integration and log in with your Appartme account. If you previously configured your own OAuth Client ID and Secret, your setup keeps working; when adding a new entry you can pick between your own credentials and the built-in **Appartme** option.
 
 ### Can I use this integration with legacy Appartme hardware?
 
